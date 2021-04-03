@@ -7,14 +7,28 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [editMode, setEditMode] = useState(false)
   const [id, setId] = useState("")
+  const [error, setError] = useState(null)
+
+  const validForm = () => {
+
+    let isValid = true
+    setError(null)
+
+    if (isEmpty(task)){
+      setError("Debes ingresar una Tarea.")
+      isValid = false
+    }
+
+    return isValid
+  }
 
   const addTask = (e) => {
     e.preventDefault()
-    if (isEmpty(task)){
-      console.log("Task Empty")
+
+    if (!validForm()){
       return
     }
-
+ 
     const newTask = {
       id: shortid.generate(),
       name: task
@@ -26,8 +40,8 @@ function App() {
 
   const saveTask = (e) => {
     e.preventDefault()
-    if (isEmpty(task)){
-      console.log("Task Empty")
+
+    if (!validForm()){
       return
     }
 
@@ -55,7 +69,7 @@ function App() {
           <h4 className="text-center">Lista de Tareas</h4>
           {
             size(tasks) === 0 ? (
-              <h5 className="text-center">Aún no hay Tareas Programadas</h5>
+              <li className="list-group-item">Aún no hay Tareas Programadas</li>
             ) : (
               <ul className="list-group">
               { 
@@ -93,6 +107,9 @@ function App() {
             onChange={(text) => setTask(text.target.value)}
             value={task}
           />
+          {
+            error && <span className="text-danger">{error}</span>
+          }
           <button 
             className={editMode ? "btn btn-warning btn-block" : "btn btn-dark btn-block"}
             type="submit"
